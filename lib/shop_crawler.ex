@@ -30,12 +30,19 @@ defmodule RequestHelper do
 end
 
 
-case RequestHelper.easy_get("/get") do
-  {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-    IO.inspect body
-    IO.inspect body[:headers]["Host"]
-  {:ok, %HTTPoison.Response{status_code: 404}} ->
-    IO.puts "Element not found (404)"
-  {:error, %HTTPoison.Error{reason: reason}} ->
-    IO.inspect reason
+defmodule Mix.Tasks.HttpbinRequestTask do
+  use Mix.Task
+
+  @shortdoc "Perform an http request on https://httpbin.org/get and display the Host property"
+
+  def run(_) do
+    case RequestHelper.easy_get("/get") do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        IO.inspect body[:headers]["Host"]
+      {:ok, %HTTPoison.Response{status_code: 404}} ->
+        IO.puts "Element not found (404)"
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        IO.inspect reason
+    end
+  end
 end
